@@ -94,10 +94,11 @@ def get_users():
 def get_user_favorites(theid=None):
     user = User.query.get(theid)
     if user is None:
-        raise APIException('User not found', status_code=404)
-    favorites = user.favorite
-    favorites = list(map(lambda item: item.serialize(), favorites))
-    return jsonify(favorites), 200
+        return jsonify({"message":"not found"}), 404
+    
+
+   
+    return jsonify(user.serialize()), 200
 
 # add favorite to user
 @app.route('/favorites/people/<int:theid>', methods=['POST'])

@@ -103,7 +103,8 @@ class Favorite(db.Model):
             "user_id": self.user_id,
             "people_id": self.people_id,
             "planet_id": self.planet_id,
-            "created": self.created
+            "created": self.created, 
+            "planets": self.planets
         }
     
 
