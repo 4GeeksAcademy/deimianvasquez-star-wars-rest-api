@@ -8,18 +8,21 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    favorite = db.relationship('Favorite', backref='user', lazy=True)
-    created= db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    favorite = db.relationship('Favorite', backref='user', uselist=True)
 
     def __repr__(self):
-        return '<User %r>' % self.name
+        # return '<User %r>' % self.name
+        return f"<User {self.name}>"
     
     def serialize(self):
         return {
             "id": self.id,
             "name": self.name,
             "email": self.email,
-            "created": self.created
+            "created": self.created,
+            "favorites": list(map(lambda item: item.serialize(), self.favorite))
         }
 
 
@@ -34,7 +37,7 @@ class People(db.Model):
     birth_year = db.Column(db.String(120), nullable=False)
     gender = db.Column(db.String(120), nullable=False)
     created= db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    favorite = db.relationship('Favorite', backref='people', lazy=True)
+    favorite = db.relationship('Favorite', backref='people')
 
     def __repr__(self):
         return '<People %r>' % self.name
@@ -66,7 +69,7 @@ class Planets(db.Model):
     terrain = db.Column(db.String(120), nullable=False)
     surface_water = db.Column(db.String(120), nullable=False)
     created= db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    favorite = db.relationship('Favorite', backref='planets', lazy=True)
+    favorite = db.relationship('Favorite', backref='deimian')
 
     def __repr__(self):
         return '<Planets %r>' % self.name
@@ -93,10 +96,12 @@ class Favorite(db.Model):
     people_id = db.Column(db.Integer, db.ForeignKey('people.id'))
     planet_id = db.Column(db.Integer, db.ForeignKey('planets.id'))
     created= db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    # user
 
     def __repr__(self):
         return '<Favorites %r>' % self.id
     
+
     def serialize(self):
         return {
             "id": self.id,
@@ -104,7 +109,7 @@ class Favorite(db.Model):
             "people_id": self.people_id,
             "planet_id": self.planet_id,
             "created": self.created, 
-            "planets": self.planets
+            "user":self.user.name
         }
     
 

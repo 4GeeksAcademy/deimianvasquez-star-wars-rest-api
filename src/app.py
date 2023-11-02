@@ -92,13 +92,17 @@ def get_users():
 #get all favorites from one user
 @app.route('/users/favorites/<int:theid>', methods=['GET'])
 def get_user_favorites(theid=None):
-    user = User.query.get(theid)
-    if user is None:
-        return jsonify({"message":"not found"}), 404
-    
+    # user = User.query.get(theid)
+    # if user is None:
+    #     return jsonify({"message":"not found"}), 404
 
-   
+    # fav = Favorite.query.filter_by(user_id=theid).all()
+    user = User.query.filter_by(id=theid).first()
+
+
+
     return jsonify(user.serialize()), 200
+
 
 # add favorite to user
 @app.route('/favorites/people/<int:theid>', methods=['POST'])
